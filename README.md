@@ -1,9 +1,14 @@
+[![Build Status](https://travis-ci.org/robotmayo/tmdb-node.svg?branch=master)](https://travis-ci.org/robotmayo/tmdb-node)
+
+
 TMDB-Node
 =========
 
 A simple node wrapper for The Movie Database Api.
 
+
     npm install
+
 
 
     var TmdbApi = require('tmdb-api')
