@@ -18,12 +18,17 @@ test("Creates the proper methods on initialization.", function(t){
     ,   movieMethods = movieKeys.map(methodPrefixer.bind(null,'movie'))
     ,   collectionKeys = utils.without('collection', Object.keys(config.endpoints.collection))
     ,   collectionMethods = collectionKeys.map(methodPrefixer.bind(null,'collection'))
+    ,   companyKeys = utils.without('company', Object.keys(config.endpoints.company))
+    ,   companyMethods = companyKeys.map(methodPrefixer.bind(null,'company'))
 
     movieMethods.forEach(function(val){
-        t.equal(typeof api[val], 'function')
+        t.equal(typeof api[val], 'function', "Testing movie method : " + val)
     })
     collectionMethods.forEach(function(val){
-        t.equal(typeof api[val], 'function')
+        t.equal(typeof api[val], 'function', "Testing collection method : " + val)
+    })
+    companyMethods.forEach(function(val){
+        t.equal(typeof api[val], 'function', "Testing company method : " + val)
     })
     t.end()
 })
