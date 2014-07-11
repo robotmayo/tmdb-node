@@ -3,6 +3,7 @@ var test = require('tape')
 ,   Api = require('../index')
 ,   config = require('../lib/config')
 ,   utils = require('../lib/utils')
+,   nock = require('nock')
 
 
 test("Throw an error if key is not supplied.", function(t){
@@ -31,6 +32,45 @@ test("Creates the proper methods on initialization.", function(t){
         t.equal(typeof api[val], 'function', "Testing company method : " + val)
     })
     t.end()
+})
+
+test("Calls the genre endpoints", function(t){
+    t.plan(3)
+    var api = new Api('key')
+
+    nock('http://api.themoviedb.org')
+        .get('/3/genre/movie/list?api_key=key')
+        .reply(200, {works : 'yes'})
+    api.genres(function(err,data,res,opts){
+        t.equal(data.works,'yes', 'Getting Genre List')
+    })
+
+    nock('http://api.themoviedb.org')
+        .get('/3/genre/28/movies?api_key=key')
+        .reply(200, {genre : 'action'})
+    api.genres(28, function(err,data,opts,dd,res){
+        t.equal(data.genre, 'action', 'Getting Genre List')
+    })
+
+    nock('http://api.themoviedb.org')
+        .get('/3/genre/28/movies?page=2&api_key=key')
+        .reply(200, {genre : 'action'})
+    api.genres(28, {page : 2}, function(err,data,opts,dd,res){
+        console.log(err)
+        t.equal(data.genre, 'action', 'Getting Genre List')
+    })
+})
+
+test("Calls the changes endpoints", function(t){
+    t.plan(1)
+    var api = new Api("key")
+    nock('http://api.themoviedb.org')
+        .get('/3/movie/changes?api_key=key')
+        .reply(200, {changed : true})
+    api.changes(function(err,data,opts,dd,res){
+        console.log(err)
+        t.equal(data.changed, true, 'Endpoint : Changes with default param')
+    })
 })
 
 function methodPrefixer(prefix, val){
