@@ -24,6 +24,8 @@ test("Creates the proper methods on initialization.", function(t){
     ,   companyKeys = utils.without('company', Object.keys(config.endpoints.company))
     ,   companyMethods = companyKeys.map(methodPrefixer.bind(null,'company'))
 
+    console.log(Object.keys(api), "FEAEGERHRE")
+
     movieMethods.forEach(function(val){
         t.equal(typeof api[val], 'function', "Testing movie method : " + val)
     })
@@ -105,6 +107,8 @@ test("Movie chain / chain generic", function(t){
         t.ok(data.changed, 'Chained method with callback')
     })
 })
+
+console.log(Object.keys(new Api("key")))
 
 function methodPrefixer(prefix, val){
     return prefix + utils.normalize(val)
