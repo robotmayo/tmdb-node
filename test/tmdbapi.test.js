@@ -4,8 +4,7 @@ var test = require('tape')
 ,   config = require('../lib/config')
 ,   utils = require('../lib/utils')
 ,   nock = require('nock')
-,   host = 'http://api.themoviedb.org'
-,   apiVer = '/3'
+,   format = require('util').format
 
 
 test("Throw an error if key is not supplied.", function(t){
@@ -24,7 +23,7 @@ test("Creates the proper methods on initialization.", function(t){
     ,   companyKeys = utils.without('company', Object.keys(config.endpoints.company))
     ,   companyMethods = companyKeys.map(methodPrefixer.bind(null,'company'))
 
-    console.log(Object.keys(api), "FEAEGERHRE")
+    
 
     movieMethods.forEach(function(val){
         t.equal(typeof api[val], 'function', "Testing movie method : " + val)
@@ -35,53 +34,62 @@ test("Creates the proper methods on initialization.", function(t){
     companyMethods.forEach(function(val){
         t.equal(typeof api[val], 'function', "Testing company method : " + val)
     })
-    t.end()
+
+    nock(config.host)
+        .get(config.apiVer + format(config.endpoints.movie.images, 550) +'?api_key=key')
+        .reply(200, {images : true})
+    api.movieImages(550, function(err,data,res,opts){
+        t.ok(data.images, 'Getting images')
+        t.end()
+    })
 })
+
+
 
 test("Calls the genre endpoints", function(t){
     t.plan(3)
     var api = new Api('key')
 
-    nock(host)
+    nock(config.host)
         .get('/3/genre/movie/list?api_key=key')
         .reply(200, {works : 'yes'})
     api.genres(function(err,data,res,opts){
         t.equal(data.works,'yes', 'Getting Genre List')
     })
 
-    nock(host)
+    nock(config.host)
         .get('/3/genre/28/movies?api_key=key')
         .reply(200, {genre : 'action'})
     api.genres(28, function(err,data,opts,dd,res){
-        t.equal(data.genre, 'action', 'Getting Genre List')
+        t.equal(data.genre, 'action', 'Getting movies of that genre')
     })
 
-    nock(host)
+    nock(config.host)
         .get('/3/genre/28/movies?page=2&api_key=key')
         .reply(200, {genre : 'action'})
     api.genres(28, {page : 2}, function(err,data,opts,dd,res){
-        t.equal(data.genre, 'action', 'Getting Genre List')
+        t.equal(data.genre, 'action', 'Getting page 2 movies of that genre')
     })
 })
 
 test("Calls the changes endpoints / test typed generic", function(t){
     t.plan(3)
     var api = new Api("key")
-    nock(host)
+    nock(config.host)
         .get('/3/movie/changes?api_key=key')
         .reply(200, {changed : true})
     api.changes(function(err,data,opts,dd,res){
         t.ok(data.changed, 'Endpoint : Changes with default param')
     })
 
-    nock(host)
+    nock(config.host)
         .get('/3/tv/changes?api_key=key')
         .reply(200, {changed : true})
     api.changes('tv', function(err,data,opts,dd,res){
         t.ok(data.changed, 'Endpoint : Changes with tv type')
     })
 
-    nock(host)
+    nock(config.host)
         .get('/3/tv/changes?page=2&api_key=key')
         .reply(200, {changed : true})
     api.changes('tv', {page : 2}, function(err,data,opts,dd,res){
@@ -92,23 +100,20 @@ test("Calls the changes endpoints / test typed generic", function(t){
 test("Movie chain / chain generic", function(t){
     t.plan(2)
     var api = new Api("key")
-    nock(host)
+    nock(config.host)
         .get('/3/movie/550?api_key=key')
         .reply(200, {changed : true})
     api.movie(550,function(err,data,opts,dd,res){
         t.ok(data.changed, 'Endpoint : Chain with id and callback first')
     })
 
-    nock(host)
+    nock(config.host)
         .get('/3/movie/550?append_to_response=images&api_key=key')
         .reply(200, {changed : true})
     api.movie(550).images(function(err,data,opts,dd,res){
-        console.log(err)
         t.ok(data.changed, 'Chained method with callback')
     })
 })
-
-console.log(Object.keys(new Api("key")))
 
 function methodPrefixer(prefix, val){
     return prefix + utils.normalize(val)
