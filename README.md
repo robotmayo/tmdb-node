@@ -7,8 +7,7 @@ TMDB-Node
 A simple node wrapper for The Movie Database Api.
 
 
-    npm install
-
+`npm install`
 
 
     var TmdbApi = require('tmdb-api')
@@ -30,3 +29,6 @@ or call the exec method.
     api.collection(550).images(function(err,data){
         console.log(data)
     })
+
+
+MIT LICENSE
