@@ -15,8 +15,9 @@ test("Throw an error if key is not supplied.", function(t){
 })
 
 test("Creates the proper methods on initialization.", function(t){
+    var withoutList = ['movie', 'top_rated', 'popular', 'upcoming', 'now_playing', 'latest']
     var api = new Api("key")
-    ,   movieKeys = utils.without('movie', Object.keys(config.endpoints.movie))
+    ,   movieKeys = utils.without(withoutList, Object.keys(config.endpoints.movie))
     ,   movieMethods = movieKeys.map(methodPrefixer.bind(null,'movie'))
     ,   collectionKeys = utils.without('collection', Object.keys(config.endpoints.collection))
     ,   collectionMethods = collectionKeys.map(methodPrefixer.bind(null,'collection'))
@@ -46,7 +47,7 @@ test("Creates the proper methods on initialization.", function(t){
 
 
 
-test("Calls the genre endpoints", function(t){
+test("Calls the genre endpoints / plain generic", function(t){
     t.plan(3)
     var api = new Api('key')
 
@@ -60,14 +61,14 @@ test("Calls the genre endpoints", function(t){
     nock(config.host)
         .get('/3/genre/28/movies?api_key=key')
         .reply(200, {genre : 'action'})
-    api.genres(28, function(err,data,opts,dd,res){
+    api.genresMovies(28, function(err,data,opts,dd,res){
         t.equal(data.genre, 'action', 'Getting movies of that genre')
     })
 
     nock(config.host)
         .get('/3/genre/28/movies?page=2&api_key=key')
         .reply(200, {genre : 'action'})
-    api.genres(28, {page : 2}, function(err,data,opts,dd,res){
+    api.genresMovies(28, {page : 2}, function(err,data,opts,dd,res){
         t.equal(data.genre, 'action', 'Getting page 2 movies of that genre')
     })
 })
@@ -113,6 +114,10 @@ test("Movie chain / chain generic", function(t){
     api.movie(550).images(function(err,data,opts,dd,res){
         t.ok(data.changed, 'Chained method with callback')
     })
+})
+
+test("Token generic", function(t){
+    t.end()
 })
 
 function methodPrefixer(prefix, val){
