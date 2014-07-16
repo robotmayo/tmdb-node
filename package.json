@@ -1,6 +1,6 @@
 {
   "name": "tmdb-node",
-  "version": "0.0.0",
+  "version": "0.8.0",
   "description": "Wrapper for The Movie Database api",
   "main": "index.js",
   "directories": {
@@ -11,6 +11,7 @@
   },
   "keywords": [
     "the movie database",
+    "the movie db",
     "tmdb",
     "api",
     "wrapper"
