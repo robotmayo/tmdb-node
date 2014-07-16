@@ -116,8 +116,54 @@ test("Movie chain / chain generic", function(t){
     })
 })
 
-test("Token generic", function(t){
-    t.end()
+test("Token generic all types", function(t){
+    t.plan(4)
+    var api = new Api("key")
+    nock(config.host)
+        .get('/3/tv/550/season/551?api_key=key')
+        .reply(200, {tokens : true})
+    api.season(550,551,function(err,data,opts,dd,res){
+        t.ok(data.tokens, '2 Token Chained method')
+    })
+
+    nock(config.host)
+        .get('/3/tv/550/season/551?append_to_response=images&api_key=key')
+        .reply(200, {tokens : true})
+    api.season(550,551).images(function(err,data,opts,dd,res){
+        t.ok(data.tokens, '2 Token Chained method, chained call')
+    })
+
+    nock(config.host)
+        .get('/3/tv/550/season/551/episode/552?api_key=key')
+        .reply(200, {tokens : true})
+    api.episode(550,551,552, function(err,data,opts,dd,res){
+        t.ok(data.tokens, '3 Token Chained method')
+    })
+
+    nock(config.host)
+        .get('/3/tv/550/season/551/episode/552?append_to_response=images&api_key=key')
+        .reply(200, {tokens : true})
+    api.episode(550,551,552).images(function(err,data,opts,dd,res){
+        t.ok(data.tokens, '3 Token Chained method, chained call')
+    })
+})
+
+test("Plain methods / singular methods", function(t){
+    t.plan(2)
+    var api = new Api("key")
+    nock(config.host)
+        .get('/3/tv/550/season/551/episode/552/external_ids?api_key=key')
+        .reply(200, {tokens : true})
+    api.episodeExternalIds(550,551,552,function(err,data,opts,dd,res){
+        t.ok(data.tokens, 'Plain method multi token')
+    })
+
+    nock(config.host)
+        .get('/3/tv/550/images?api_key=key')
+        .reply(200, {tokens : true})
+    api.tvImages(550,function(err,data,opts,dd,res){
+        t.ok(data.tokens, 'Plain method single token')
+    })
 })
 
 function methodPrefixer(prefix, val){
