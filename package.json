@@ -3,6 +3,8 @@
   "version": "0.8.0",
   "description": "Wrapper for The Movie Database api",
   "main": "index.js",
+  "homepage" : "https://github.com/robotmayo/tmdb-node",
+  "bugs" : "https://github.com/robotmayo/tmdb-node/issues",
   "directories": {
     "test": "test"
   },

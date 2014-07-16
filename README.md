@@ -6,8 +6,10 @@ TMDB-Node
 
 A simple node wrapper for The Movie Database Api.
 
+Note : Currently does not support authed endpoints(coming soon™)
 
-`npm install`
+
+`npm install tmdb-node`
 
 
     var TmdbApi = require('tmdb-api')
@@ -15,6 +17,12 @@ A simple node wrapper for The Movie Database Api.
     api.genres(function(err,data){
         console.log(data)
     })
+
+Unless other wise noted all callbacks use the following signature :
+
+callback(err,response)
+
+Response will automatically be parsed as JSON unless there is an error.
 
 Some of the calls are chainable, the chainable methods work similar to the non chainable ones.
 The biggest difference is that chainable methods will not execute until you pass in a callback
@@ -29,6 +37,26 @@ or call the exec method.
     api.collection(550).images(function(err,data){
         console.log(data)
     })
+
+The signature for a method depends on the endpoint. If the endpoint has variables then each variable must be passed in order. Examples:
+
+/discover/movie
+
+function(opts,callback)
+
+/tv/{id}/season/{season_number}
+
+function(id,seasonNumber,opts,callback)
+
+Search
+======
+Search works a bit differently from every other method.
+
+    Api.search(where,query,opts,callback)
+
+where-> The section to search. See [the official documentation for a list](http://docs.themoviedb.apiary.io/)
+
+query-> Your search query
 
 
 MIT LICENSE
