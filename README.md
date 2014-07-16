@@ -38,6 +38,12 @@ or call the exec method.
         console.log(data)
     })
 
+I don't want a chained response, I just want movie images.
+
+No problem! All chained methods have a static counterpart. The format is always the same, xY. Where x is the type and Y is the resource. Example:
+
+    api.movieImages(550,myOpts,callback)
+
 The signature for a method depends on the endpoint. If the endpoint has variables then each variable must be passed in order. Examples:
 
 /discover/movie
