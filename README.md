@@ -12,7 +12,7 @@ Note : Currently does not support authed endpoints(coming soon™)
 `npm install tmdb-node`
 
 
-    var TmdbApi = require('tmdb-api')
+    var TmdbApi = require('tmdb-node')
     var api = new TmdbApi(API_KEY) //Will throw an error if a key isn't supplied
     api.genres(function(err,data){
         console.log(data)
